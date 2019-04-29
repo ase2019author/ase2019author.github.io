@@ -1,1 +1,524 @@
-Hello World
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Semistructured Merge for JavaScript Systems - Online Appendix</title>
+  <link rel="stylesheet" href="stylesheet.css" type="text/css">
+  </head>
+  <body>
+    <header>
+      <h1>Semistructured Merge for JavaScript Systems</h1>
+      <h2>Online Appendix</h2>
+    </header>
+    <section>
+      <h2>Abstract</h2>
+      <p>The industry widely uses unstructured merge tools, that rely on textual analysis, to detect and resolve conflicts between parallel code contributions. On the other hand, semistructured merge tools go further by partially analyzing the syntactic structure and semantics of the code artifacts involved in a conflict. Previous studies compare these merge approaches, showing that semistructured merge is superior to unstructured one with respect to the number of reported conflicts, reducing the integration effort spent by developers, but, also, possibly negatively impacting the correctness of the merging process. However, these studies are based on semistructured merge tools that support different languages such as Java and C\#, but not JavaScript, the most popular programming language for the Web. In this paper, we implement different versions of semistructured tools that support JavaScript, and we conduct a study to compare them to an unstructured tool in order to better understand how semistructured merge works across different languages. We found evidences that semistructured merge approach for JavaScript reports fewer spurious conflicts than unstructured merge, without significantly impacting the integration correctness.</p>
+      <p>
+        <span>Keywords: Collaborative development, Software merging, Semistructured merge, Version control systems, JavaScript.</span> 
+      </p>
+    </section>
+    <section>
+      <h2>Empirical Evaluation</h2>
+      <section>
+        <h3>Tools</h3>
+        <p>As semistructured merge tools, we evaluated two versions of jsFSTMerge developed in this work. Online links to source code, available on GitHub, of both unstructured and semistructured tools are provided below:</p>
+        <ul>
+          <li><a href="https://github.com/KDE/kdiff3" target="_blank">KDiff3</a></li>
+          <li><a href="https://github.com/ase2019author/jsFSTMerge-v1" target="_blank">jsFSTMerge v1</a></li>
+          <li><a href="https://github.com/ase2019author/jsFSTMerge-v2" target="_blank">jsFSTMerge v2</a></li>
+        </ul>
+      </section>
+      <section>
+        <h3>Subject Systems</h3>
+        <table class="table table-striped table-bordered">
+          <tr>
+              <td>Name</td>
+              <td>URL</td>
+              <td>LOC</td>
+              <td>Collaborators</td>
+              <td>Commits</td>
+              <td>Merge Commits</td>
+              <td>Analyzed Merge Scenarios</td>
+          </tr>
+          <tr>
+              <td>Ace</td>
+              <td><a href="https://github.com/ajaxorg/ace">https://github.com/ajaxorg/ace</a></td>
+              <td class="number">212,097</td>
+              <td class="number">341</td>
+              <td class="number">7,439</td>
+              <td class="number">199</td>
+              <td class="number">195</td>
+          </tr>
+          <tr>
+              <td>AngularJS</td>
+              <td><a href="https://github.com/angular/angular.js">https://github.com/angular/angular.js</a></td>
+              <td class="number">116,483</td>
+              <td class="number">1,599</td>
+              <td class="number">8,951</td>
+              <td class="number">34</td>
+              <td class="number">34</td>
+          </tr>
+          <tr>
+              <td>Async</td>
+              <td><a href="https://github.com/caolan/async">https://github.com/caolan/async</a></td>
+              <td class="number">12,878</td>
+              <td class="number">216</td>
+              <td class="number">1,707</td>
+              <td class="number">372</td>
+              <td class="number">372</td>
+          </tr>
+          <tr>
+              <td>BitcoinJS</td>
+              <td><a href="https://github.com/bitcoinjs/bitcoinjs-lib">https://github.com/bitcoinjs/bitcoinjs-lib</a></td>
+              <td class="number">6,812</td>
+              <td class="number">60</td>
+              <td class="number">2,403</td>
+              <td class="number">375</td>
+              <td class="number">375</td>
+          </tr>
+          <tr>
+              <td>Bluebird</td>
+              <td><a href="https://github.com/petkaantonov/bluebird">https://github.com/petkaantonov/bluebird</a></td>
+              <td class="number">39,097</td>
+              <td class="number">201</td>
+              <td class="number">2,055</td>
+              <td class="number">216</td>
+              <td class="number">216</td>
+          </tr>
+          <tr>
+              <td>Bower</td>
+              <td><a href="https://github.com/bower/bower">https://github.com/bower/bower</a></td>
+              <td class="number">9,951</td>
+              <td class="number">210</td>
+              <td class="number">2,712</td>
+              <td class="number">427</td>
+              <td class="number">427</td>
+          </tr>
+          <tr>
+              <td>Bowser</td>
+              <td><a href="https://github.com/lancedikson/bowser">https://github.com/lancedikson/bowser</a></td>
+              <td class="number">1,853</td>
+              <td class="number">65</td>
+              <td class="number">625</td>
+              <td class="number">129</td>
+              <td class="number">129</td>
+          </tr>
+          <tr>
+              <td>Brackets</td>
+              <td><a href="https://github.com/adobe/brackets">https://github.com/adobe/brackets</a></td>
+              <td class="number">382,360</td>
+              <td class="number">356</td>
+              <td class="number">17,702</td>
+              <td class="number">88</td>
+              <td class="number">88</td>
+          </tr>
+          <tr>
+              <td>Chance</td>
+              <td><a href="https://github.com/chancejs/chancejs">https://github.com/chancejs/chancejs</a></td>
+              <td class="number">3,800</td>
+              <td class="number">100</td>
+              <td class="number">841</td>
+              <td class="number">195</td>
+              <td class="number">194</td>
+          </tr>
+          <tr>
+              <td>d3</td>
+              <td><a href="https://github.com/d3/d3">https://github.com/d3/d3</a></td>
+              <td class="number">40,633</td>
+              <td class="number">123</td>
+              <td class="number">4,157</td>
+              <td class="number">198</td>
+              <td class="number">159</td>
+          </tr>
+          <tr>
+              <td>director</td>
+              <td><a href="https://github.com/flatiron/director">https://github.com/flatiron/director</a></td>
+              <td class="number">5,027</td>
+              <td class="number">53</td>
+              <td class="number">747</td>
+              <td class="number">77</td>
+              <td class="number">77</td>
+          </tr>
+          <tr>
+              <td>Dox</td>
+              <td><a href="https://github.com/tj/dox">https://github.com/tj/dox</a></td>
+              <td class="number">2,418</td>
+              <td class="number">34</td>
+              <td class="number">469</td>
+              <td class="number">55</td>
+              <td class="number">55</td>
+          </tr>
+          <tr>
+              <td>faker.js</td>
+              <td><a href="https://github.com/Marak/faker.js">https://github.com/Marak/faker.js</a></td>
+              <td class="number">989,523</td>
+              <td class="number">149</td>
+              <td class="number">984</td>
+              <td class="number">179</td>
+              <td class="number">178</td>
+          </tr>
+          <tr>
+              <td>fetch</td>
+              <td><a href="https://github.com/github/fetch">https://github.com/github/fetch</a></td>
+              <td class="number">1,706</td>
+              <td class="number">51</td>
+              <td class="number">587</td>
+              <td class="number">117</td>
+              <td class="number">117</td>
+          </tr>
+          <tr>
+              <td>Flux</td>
+              <td><a href="https://github.com/facebook/flux">https://github.com/facebook/flux</a></td>
+              <td class="number">2,314</td>
+              <td class="number">111</td>
+              <td class="number">388</td>
+              <td class="number">114</td>
+              <td class="number">114</td>
+          </tr>
+          <tr>
+              <td>GitBook</td>
+              <td><a href="https://github.com/GitbookIO/gitbook">https://github.com/GitbookIO/gitbook</a></td>
+              <td class="number">4,246</td>
+              <td class="number">85</td>
+              <td class="number">2,377</td>
+              <td class="number">207</td>
+              <td class="number">205</td>
+          </tr>
+          <tr>
+              <td>i18next</td>
+              <td><a href="https://github.com/i18next/i18next">https://github.com/i18next/i18next</a></td>
+              <td class="number">1,995</td>
+              <td class="number">115</td>
+              <td class="number">1,284</td>
+              <td class="number">247</td>
+              <td class="number">229</td>
+          </tr>
+          <tr>
+              <td>impress.js</td>
+              <td><a href="https://github.com/impress/impress.js">https://github.com/impress/impress.js</a></td>
+              <td class="number">1,144</td>
+              <td class="number">59</td>
+              <td class="number">362</td>
+              <td class="number">59</td>
+              <td class="number">59</td>
+          </tr>
+          <tr>
+              <td>Intro.js</td>
+              <td><a href="https://github.com/usablica/intro.js">https://github.com/usablica/intro.js</a></td>
+              <td class="number">817</td>
+              <td class="number">74</td>
+              <td class="number">629</td>
+              <td class="number">169</td>
+              <td class="number">169</td>
+          </tr>
+          <tr>
+              <td>Istanbul</td>
+              <td><a href="https://github.com/gotwarlost/istanbul">https://github.com/gotwarlost/istanbul</a></td>
+              <td class="number">4,953</td>
+              <td class="number">78</td>
+              <td class="number">572</td>
+              <td class="number">126</td>
+              <td class="number">126</td>
+          </tr>
+          <tr>
+              <td>Jasmine</td>
+              <td><a href="https://github.com/jasmine/jasmine">https://github.com/jasmine/jasmine</a></td>
+              <td class="number">24,743</td>
+              <td class="number">181</td>
+              <td class="number">1,915</td>
+              <td class="number">285</td>
+              <td class="number">285</td>
+          </tr>
+          <tr>
+              <td>jQuery</td>
+              <td><a href="https://github.com/jquery/jquery">https://github.com/jquery/jquery</a></td>
+              <td class="number">38,069</td>
+              <td class="number">273</td>
+              <td class="number">6,362</td>
+              <td class="number">248</td>
+              <td class="number">245</td>
+          </tr>
+          <tr>
+              <td>jquery-pjax</td>
+              <td><a href="https://github.com/defunkt/jquery-pjax">https://github.com/defunkt/jquery-pjax</a></td>
+              <td class="number">13,483</td>
+              <td class="number">62</td>
+              <td class="number">508</td>
+              <td class="number">98</td>
+              <td class="number">98</td>
+          </tr>
+          <tr>
+              <td>JSHint</td>
+              <td><a href="https://github.com/jshint/jshint">https://github.com/jshint/jshint</a></td>
+              <td class="number">46,360</td>
+              <td class="number">235</td>
+              <td class="number">2,081</td>
+              <td class="number">337</td>
+              <td class="number">337</td>
+          </tr>
+          <tr>
+              <td>Konva</td>
+              <td><a href="https://github.com/konvajs/konva">https://github.com/konvajs/konva</a></td>
+              <td class="number">43,073</td>
+              <td class="number">107</td>
+              <td class="number">2,459</td>
+              <td class="number">262</td>
+              <td class="number">257</td>
+          </tr>
+          <tr>
+              <td>Less.js</td>
+              <td><a href="https://github.com/less/less.js">https://github.com/less/less.js</a></td>
+              <td class="number">126,312</td>
+              <td class="number">217</td>
+              <td class="number">2,871</td>
+              <td class="number">458</td>
+              <td class="number">443</td>
+          </tr>
+          <tr>
+              <td>Mocha</td>
+              <td><a href="https://github.com/mochajs/mocha">https://github.com/mochajs/mocha</a></td>
+              <td class="number">15,727</td>
+              <td class="number">397</td>
+              <td class="number">3,072</td>
+              <td class="number">187</td>
+              <td class="number">186</td>
+          </tr>
+          <tr>
+              <td>Mousetrap</td>
+              <td><a href="https://github.com/ccampbell/mousetrap">https://github.com/ccampbell/mousetrap</a></td>
+              <td class="number">16,137</td>
+              <td class="number">22</td>
+              <td class="number">370</td>
+              <td class="number">36</td>
+              <td class="number">36</td>
+          </tr>
+          <tr>
+              <td>mustache.js</td>
+              <td><a href="https://github.com/janl/mustache.js">https://github.com/janl/mustache.js</a></td>
+              <td class="number">1,295</td>
+              <td class="number">90</td>
+              <td class="number">731</td>
+              <td class="number">134</td>
+              <td class="number">134</td>
+          </tr>
+          <tr>
+              <td>Nightmare</td>
+              <td><a href="https://github.com/segmentio/nightmare">https://github.com/segmentio/nightmare</a></td>
+              <td class="number">3,719</td>
+              <td class="number">111</td>
+              <td class="number">987</td>
+              <td class="number">267</td>
+              <td class="number">267</td>
+          </tr>
+          <tr>
+              <td>node_redis</td>
+              <td><a href="https://github.com/NodeRedis/node_redis">https://github.com/NodeRedis/node_redis</a></td>
+              <td class="number">5,551</td>
+              <td class="number">131</td>
+              <td class="number">1,251</td>
+              <td class="number">200</td>
+              <td class="number">187</td>
+          </tr>
+          <tr>
+              <td>node-restify</td>
+              <td><a href="https://github.com/restify/node-restify">https://github.com/restify/node-restify</a></td>
+              <td class="number">2,999</td>
+              <td class="number">186</td>
+              <td class="number">1,610</td>
+              <td class="number">305</td>
+              <td class="number">294</td>
+          </tr>
+          <tr>
+              <td>numbers.js</td>
+              <td><a href="https://github.com/numbers/numbers.js">https://github.com/numbers/numbers.js</a></td>
+              <td class="number">3,241</td>
+              <td class="number">26</td>
+              <td class="number">392</td>
+              <td class="number">92</td>
+              <td class="number">92</td>
+          </tr>
+          <tr>
+              <td>page.js</td>
+              <td><a href="https://github.com/visionmedia/page.js">https://github.com/visionmedia/page.js</a></td>
+              <td class="number">2,305</td>
+              <td class="number">82</td>
+              <td class="number">628</td>
+              <td class="number">142</td>
+              <td class="number">128</td>
+          </tr>
+          <tr>
+              <td>Paper.js</td>
+              <td><a href="https://github.com/paperjs/paper.js">https://github.com/paperjs/paper.js</a></td>
+              <td class="number">13,658</td>
+              <td class="number">64</td>
+              <td class="number">7,177</td>
+              <td class="number">412</td>
+              <td class="number">411</td>
+          </tr>
+          <tr>
+              <td>Phaser</td>
+              <td><a href="https://github.com/photonstorm/phaser">https://github.com/photonstorm/phaser</a></td>
+              <td class="number">396,498</td>
+              <td class="number">400</td>
+              <td class="number">12,123</td>
+              <td class="number">199</td>
+              <td class="number">198</td>
+          </tr>
+          <tr>
+              <td>PM2</td>
+              <td><a href="https://github.com/Unitech/pm2">https://github.com/Unitech/pm2</a></td>
+              <td class="number">21,977</td>
+              <td class="number">205</td>
+              <td class="number">4,483</td>
+              <td class="number">197</td>
+              <td class="number">193</td>
+          </tr>
+          <tr>
+              <td>Pug</td>
+              <td><a href="https://github.com/pugjs/pug">https://github.com/pugjs/pug</a></td>
+              <td class="number">13,358</td>
+              <td class="number">208</td>
+              <td class="number">2,526</td>
+              <td class="number">459</td>
+              <td class="number">451</td>
+          </tr>
+          <tr>
+              <td>Q</td>
+              <td><a href="https://github.com/kriskowal/q">https://github.com/kriskowal/q</a></td>
+              <td class="number">8,333</td>
+              <td class="number">70</td>
+              <td class="number">894</td>
+              <td class="number">152</td>
+              <td class="number">148</td>
+          </tr>
+          <tr>
+              <td>Request</td>
+              <td><a href="https://github.com/request/request">https://github.com/request/request</a></td>
+              <td class="number">2,791</td>
+              <td class="number">284</td>
+              <td class="number">2,263</td>
+              <td class="number">200</td>
+              <td class="number">185</td>
+          </tr>
+          <tr>
+              <td>RequireJS</td>
+              <td><a href="https://github.com/requirejs/requirejs">https://github.com/requirejs/requirejs</a></td>
+              <td class="number">25,068</td>
+              <td class="number">101</td>
+              <td class="number">1,405</td>
+              <td class="number">157</td>
+              <td class="number">157</td>
+          </tr>
+          <tr>
+              <td>reveal.js</td>
+              <td><a href="https://github.com/hakimel/reveal.js">https://github.com/hakimel/reveal.js</a></td>
+              <td class="number">9,004</td>
+              <td class="number">227</td>
+              <td class="number">2,202</td>
+              <td class="number">389</td>
+              <td class="number">389</td>
+          </tr>
+          <tr>
+              <td>socket.io</td>
+              <td><a href="https://github.com/socketio/socket.io">https://github.com/socketio/socket.io</a></td>
+              <td class="number">1,806</td>
+              <td class="number">155</td>
+              <td class="number">1,714</td>
+              <td class="number">309</td>
+              <td class="number">290</td>
+          </tr>
+          <tr>
+              <td>StatsD</td>
+              <td><a href="https://github.com/etsy/statsd">https://github.com/etsy/statsd</a></td>
+              <td class="number">2,936</td>
+              <td class="number">170</td>
+              <td class="number">934</td>
+              <td class="number">287</td>
+              <td class="number">287</td>
+          </tr>
+          <tr>
+              <td>Stylus</td>
+              <td><a href="https://github.com/stylus/stylus">https://github.com/stylus/stylus</a></td>
+              <td class="number">3,501</td>
+              <td class="number">156</td>
+              <td class="number">3,908</td>
+              <td class="number">189</td>
+              <td class="number">188</td>
+          </tr>
+          <tr>
+              <td>three.js</td>
+              <td><a href="https://github.com/mrdoob/three.js">https://github.com/mrdoob/three.js</a></td>
+              <td class="number">190,818</td>
+              <td class="number">1,031</td>
+              <td class="number">26,208</td>
+              <td class="number">93</td>
+              <td class="number">92</td>
+          </tr>
+          <tr>
+              <td>Underscore.js</td>
+              <td><a href="https://github.com/jashkenas/underscore">https://github.com/jashkenas/underscore</a></td>
+              <td class="number">9,126</td>
+              <td class="number">258</td>
+              <td class="number">2,439</td>
+              <td class="number">238</td>
+              <td class="number">238</td>
+          </tr>
+          <tr>
+              <td>WebTorrent</td>
+              <td><a href="https://github.com/webtorrent/webtorrent">https://github.com/webtorrent/webtorrent</a></td>
+              <td class="number">4,493</td>
+              <td class="number">116</td>
+              <td class="number">2,392</td>
+              <td class="number">306</td>
+              <td class="number">306</td>
+          </tr>
+          <tr>
+              <td>whistle</td>
+              <td><a href="https://github.com/avwo/whistle">https://github.com/avwo/whistle</a></td>
+              <td class="number">3,022</td>
+              <td class="number">9</td>
+              <td class="number">7,498</td>
+              <td class="number">63</td>
+              <td class="number">63</td>
+          </tr>
+          <tr>
+              <td>Zepto.js</td>
+              <td><a href="https://github.com/madrobby/zepto">https://github.com/madrobby/zepto</a></td>
+              <td class="number">1,594</td>
+              <td class="number">183</td>
+              <td class="number">1,516</td>
+              <td class="number">242</td>
+              <td class="number">242</td>
+          </tr>
+          <tr>
+              <td>Total</td>
+              <td></td>
+              <td class="number">2,891,104</td>
+              <td class="number">9,837</td>
+              <td class="number">161,910</td>
+              <td class="number">10,526</td>
+              <td class="number">10,345</td>
+          </tr>
+          <tr>
+              <td>Mean</td>
+              <td></td>
+              <td class="number">57,822</td>
+              <td class="number">197</td>
+              <td class="number">3,238</td>
+              <td class="number">211</td>
+              <td class="number">207</td>
+          </tr>
+          <tr>
+              <td>Standard Deviation</td>
+              <td></td>
+              <td class="number">158,984</td>
+              <td class="number">256</td>
+              <td class="number">4,665</td>
+              <td class="number">112</td>
+              <td class="number">111</td>
+          </tr>
+      </table>
+      </section>
+    </section>
+  </body>
+</html>
